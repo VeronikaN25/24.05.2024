@@ -12,14 +12,12 @@ namespace _24._05._2024
 {
     public partial class Calculatorcs : Form
     {
-        float a, b;
-
-        int count;
-
-        bool znak = true;
-
+        public string D;
+        public string N1;
+        public bool N2;
         public Calculatorcs()
         {
+            N2 = false;
             InitializeComponent();
         }
 
@@ -29,60 +27,112 @@ namespace _24._05._2024
             newForm.Show();
 
         }
-
-        private void n6_Click(object sender, EventArgs e)
-        {
-            textBox1.Text = textBox1.Text + 6;
-        }
-
-        private void n9_Click(object sender, EventArgs e)
-        {
-            textBox1.Text = textBox1.Text + 9;
-        }
-
-        private void n1_Click(object sender, EventArgs e)
-        {
-            textBox1.Text = textBox1.Text + 1;
-        }
-
-        private void n2_Click(object sender, EventArgs e)
-        {
-            textBox1.Text = textBox1.Text + 2;
-        }
-
         private void n3_Click(object sender, EventArgs e)
         {
-            textBox1.Text = textBox1.Text + 3;
+            Button B = (Button)sender;
+
+            if (N2)
+            {
+                textBox1.Text = textBox1.Text + B.Text;
+            }
+            else
+            {
+                if (textBox1.Text == "0")
+                {
+                    textBox1.Text = B.Text;
+                }
+                else
+                {
+                    textBox1.Text = textBox1.Text + B.Text;
+                }
+            }
         }
 
-        private void n4_Click(object sender, EventArgs e)
+        private void clear_Click(object sender, EventArgs e)
         {
-            textBox1.Text = textBox1.Text + 4;
+            textBox1.Text = "0";
+            N1 = string.Empty;
+            D = string.Empty;
+            N2 = false;
         }
 
-        private void n5_Click(object sender, EventArgs e)
+        private void mult_Click(object sender, EventArgs e)
         {
-            textBox1.Text = textBox1.Text + 5;
+            Button B = (Button)sender;
+            textBoxResult.Text = string.Empty;
+            D = B.Text;
+            N1 = textBox1.Text;
+            N2 = true;
+            textBox1.Text = textBox1.Text + " " + D + " ";
         }
 
-        private void n7_Click(object sender, EventArgs e)
+        private void equal_Click(object sender, EventArgs e)
         {
-            textBox1.Text = textBox1.Text + 7;
+            try
+            {
+                string[] parts = textBox1.Text.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+
+                if (parts.Length < 3)
+                {
+                    MessageBox.Show("Некорректное выражение.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                double dn1 = Convert.ToDouble(parts[0]);
+                double dn2 = Convert.ToDouble(parts[2]);
+                double res = 0;
+
+                switch (D)
+                {
+                    case "+":
+                        res = dn1 + dn2;
+                        break;
+                    case "-":
+                        res = dn1 - dn2;
+                        break;
+                    case "x":
+                        res = dn1 * dn2;
+                        break;
+                    case "/":
+                        if (dn2 == 0)
+                        {
+                            textBoxResult.Text = "error";
+                            return;
+                        }
+                        res = dn1 / dn2;
+                        break;
+                }
+
+                textBoxResult.Text = res.ToString();
+                D = string.Empty;
+                N1 = string.Empty;
+                N2 = false;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Произошла ошибка: " + ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
-        private void n8_Click(object sender, EventArgs e)
+        private void dot_Click(object sender, EventArgs e)
         {
-            textBox1.Text = textBox1.Text + 8;
+            if (!textBox1.Text.Contains(","))
+            {
+                textBox1.Text = textBox1.Text + ",";
+            }
         }
 
-        private void add_Click(object sender, EventArgs e)
+        private void back_Click(object sender, EventArgs e)
         {
-           
-        }
+            if (textBox1.Text.Length > 0)
+            {
+                textBox1.Text = textBox1.Text.Substring(0, textBox1.Text.Length - 1);
+            }
 
-        private void n0_Click(object sender, EventArgs e)
-        {
-            textBox1.Text = textBox1.Text + 0;
+            if (string.IsNullOrEmpty(textBox1.Text))
+            {
+                textBox1.Text = "0";
+            }
         }
     }
 }
